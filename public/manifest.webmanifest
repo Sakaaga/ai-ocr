@@ -1,0 +1,10 @@
+{
+  "name": "AI OCR",
+  "short_name": "AI OCR",
+  "description": "On-device OCR for images and PDF documents",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#101827",
+  "theme_color": "#101827",
+  "lang": "ja"
+}
