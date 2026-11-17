@@ -150,7 +150,7 @@ export default function App() {
 
         <section className="panel preview-panel">
           <div className="panel-heading"><h3>プレビュー</h3><span>{activePage ? activePage.source === "ocr" ? "AI OCR" : "PDFテキスト抽出" : "ファイル未選択"}</span></div>
-          {activePage ? <div className="preview-canvas"><img src={activePage.previewUrl} alt="読み込んだページ" /></div> :
+          {activePage ? <div className="preview-canvas"><div className="preview-image-wrap"><img src={activePage.previewUrl} alt="読み込んだページ" />{activePage.source === "ocr" && activePage.width > 0 && <svg className="ocr-overlay" viewBox={`0 0 ${activePage.width} ${activePage.height}`} preserveAspectRatio="none" aria-label="OCR認識領域">{activePage.lines.map((line) => line.poly.length > 0 && <polygon key={line.id} points={line.poly.map(([x, y]) => `${x},${y}`).join(" ")} />)}</svg>}</div></div> :
             <div className="preview-empty"><div className="document-icon">▧</div><span>プレビューがここに表示されます</span></div>}
         </section>
 
