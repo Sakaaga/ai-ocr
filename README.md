@@ -30,11 +30,17 @@ npm run build
 - OCR runs in the browser using PaddleOCR.js (PP-OCRv6, Japanese model selection)
 - No application server or OCR API is used
 
-## Model delivery and offline behavior
+## Models, caching and offline behavior
 
-The app uses PaddleOCR.js built-in model assets by default. It does not require Cloudflare R2. The SDK downloads its model assets from its configured upstream model host.
+- Available OCR models are defined in `src/models.ts`. Add an entry there to expose a new model in the UI.
+- Each model engine is created once per session and reused.
+- The Service Worker (`public/sw.js`) caches the PaddleOCR model archives (`.tar`) and the ONNX Runtime WASM/MJS files in a separate `ai-ocr-models-v1` cache, so they survive app updates.
+- The "取得済み" marker in the model list is only a hint stored in localStorage. The actual cache is in the Cache Storage.
+- Offline use after the first download should be verified in each target browser before advertising it.
 
-The Service Worker caches the same-origin application shell. Browser HTTP caching of cross-origin model/WASM assets is controlled by the upstream server and browser cache policy; **this initial MVP does not yet guarantee durable offline model availability**. A follow-up implementation should add an explicit model-cache/download manager and verify offline startup in supported browsers before advertising full offline support.
+## Preprocessing
+
+Preprocessing runs entirely in the browser (`src/preprocess.ts`): grayscale, contrast stretch, median denoise, sharpen, 2x upscale for small images, Otsu binarization, invert, and 90-degree rotation. Presets set the checkboxes in one click, "自動判定して設定" analyzes the active page, and "取り込み時に自動判定" analyzes each new image on import. Auto decisions use simple heuristics and are shown as reasons so they can be overridden.
 
 ## Known limitations
 
